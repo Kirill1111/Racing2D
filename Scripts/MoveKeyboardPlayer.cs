@@ -14,8 +14,9 @@ public class MoveKeyboardPlayer : MonoBehaviour
     public float MaxSpeed = 60;
     public float speeD = 3;
     public Camera cam;
-    public int ButtonID;
+   public int ButtonID;
     public GameObject MobileControl;
+    public GameObject Timer;
 
     private RigidbodyConstraints standart;
     private bool OnCol = false;
@@ -60,83 +61,89 @@ public class MoveKeyboardPlayer : MonoBehaviour
 
     void Update()
     {
-        carAudio.pitch = Mathf.Clamp(speed / 15, 0.1f, 4f);
-        rb.velocity = -player.transform.up * speed * Time.deltaTime *25;
         cam.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
+        carAudio.pitch = Mathf.Clamp(speed / 15, 0.1f, 4f);
 
-        if (OnCol == false)
+        if (Timer.GetComponent<Timer>().isStart == true)
         {
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || ButtonID == 1)
+            rb.velocity = -player.transform.up * speed * Time.deltaTime * 35;
+            cam.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
+
+
+            if (OnCol == false)
             {
-                if (speed < MaxSpeed && speed + speeD * Time.deltaTime < MaxSpeed)
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || ButtonID == 1)
                 {
-                    speed += speedAcceleration * Time.deltaTime;
-                    run = true;
-                    KeyDown = true;
+                    if (speed < MaxSpeed && speed + speeD * Time.deltaTime < MaxSpeed)
+                    {
+                        speed += speedAcceleration * Time.deltaTime;
+                        run = true;
+                        KeyDown = true;
+                    }
+                }
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || ButtonID == 3)
+                {
+                    if (speed > MinSpeed && speed - speeD * Time.deltaTime > MinSpeed)
+                    {
+                        if (speed >= 0)
+                            speed -= speeD * Time.deltaTime * speeD;
+                        else
+                            speed -= speeD * Time.deltaTime * speeD / 3;
+                        run = false;
+                        KeyDown = true;
+                    }
                 }
             }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || ButtonID == 3)
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || ButtonID == 4)
             {
-                if (speed > MinSpeed && speed - speeD * Time.deltaTime > MinSpeed)
+                if (speed == 0) return;
+                speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3.5f;
+                if (run || speed > 0)
+                    rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
+                else
+                    rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || ButtonID == 2)
+            {
+                if (speed == 0) return;
+                speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3;
+                if (run || speed > 0)
+                    rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
+                else
+                    rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
+            }
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+
+            if (KeyDown == false)
+            {
+                if (speed >= 0)
                 {
-                    if (speed >= 0)
-                        speed -= speeD * Time.deltaTime * speeD;
+                    if (speed - speeD * Time.deltaTime > 0)
+                        speed -= speeD * Time.deltaTime;
                     else
-                        speed -= speeD * Time.deltaTime * speeD / 3;
-                    run = false;
-                    KeyDown = true;
+                    {
+                        speed = 0;
+                        run = true;
+                    }
                 }
-            }
-        }
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || ButtonID == 4)
-        {
-            if (speed == 0) return;
-            speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3.5f;
-            if (run || speed > 0)
-                rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
-            else
-                rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || ButtonID == 2)
-        {
-            if (speed == 0) return;
-            speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3;
-            if (run || speed > 0)
-                rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
-            else
-                rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
-
-        if (KeyDown == false)
-        {
-            if (speed >= 0)
-            {
-                if (speed - speeD * Time.deltaTime > 0)
-                    speed -= speeD * Time.deltaTime;
                 else
                 {
-                    speed = 0;
-                    run = true;
+                    if (speed + speeD * Time.deltaTime < 0)
+                        speed += speeD * Time.deltaTime;
+                    else
+                    {
+                        speed = 0;
+                        run = true;
+                    }
                 }
+                return;
             }
-            else
-            {
-                if (speed + speeD * Time.deltaTime < 0)
-                    speed += speeD * Time.deltaTime;
-                else
-                {
-                    speed = 0;
-                    run = true;
-                }
-            }
-            return;
-        }
 
-        KeyDown = false;
+            KeyDown = false;
+        }
     }
 
     private void OnCollisionExit(Collision collision)
