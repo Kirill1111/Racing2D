@@ -16,7 +16,7 @@ public class Speedometer : MonoBehaviour {
 	public enum ProjectMode {Project3D = 0, Project2D = 1};
 	public ProjectMode projectMode = ProjectMode.Project3D;
 
-	public Transform target; // объект с которого берем скорость
+	public GameObject target; // объект с которого берем скорость
 
 	public float velocity; // текущая реальная скорость объекта
 
@@ -33,7 +33,7 @@ public class Speedometer : MonoBehaviour {
 
 	void Update () 
 	{
-       velocity = target.GetComponent<MoveKeyboardPlayer>().speed * 6;
+       velocity = (float)target.GetComponent<MoveKeyboardPlayer>().speed.GetValue() * 6;
 
 		if(velocity > maxSpeed) velocity = maxSpeed;
         if (velocity < 0) velocity = Math.Abs(velocity);
