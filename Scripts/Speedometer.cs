@@ -36,11 +36,8 @@ public class Speedometer : Photon.MonoBehaviour {
 
 	void Update () 
 	{
-<<<<<<< HEAD
-            velocity = (float)target.GetComponent<MoveKeyboardPlayer>().speed.GetValue() * 6;
-=======
-       velocity = (float)target.GetComponent<MoveKeyboardPlayer>().speed.GetValue() * 6;
->>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
+
+            velocity = (float)target.GetComponent<MoveKeyboardPlayer>().speed * 6;
 
             if (velocity > maxSpeed) velocity = maxSpeed;
             if (velocity < 0) velocity = Math.Abs(velocity);
