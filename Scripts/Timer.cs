@@ -55,7 +55,11 @@ public class Timer : MonoBehaviour {
         if (time > 0)
         {         
             time--;
+<<<<<<< HEAD
             Informations. isStart = true;
+=======
+            isStart = true;
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
             Timer1.GetComponent<Text>().text = time.ToString();
         }
         if (time == 0)
@@ -65,7 +69,11 @@ public class Timer : MonoBehaviour {
             if (Car.GetComponent<Points>().isFinish != true)
             {
                 TimerStart.GetComponent<Text>().text = "Вы проиграли";
+<<<<<<< HEAD
                 Informations.isStart = false;
+=======
+                isStart = false;
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
                 Invoke("LoadScene",5);
             }
             else

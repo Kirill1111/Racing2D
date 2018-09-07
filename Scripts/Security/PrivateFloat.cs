@@ -51,26 +51,39 @@ public class Private
 
 
     #region operations
+<<<<<<< HEAD
 
+=======
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
     public static implicit operator Private(double value)
     {
         return new Private(value);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
     public static implicit operator Private(float value)
     {
         return new Private(value);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
     public static implicit operator Private(int value)
     {
         return new Private(value);
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
     public static implicit operator Private(byte value)
     {
         return new Private(value);
     }
+<<<<<<< HEAD
 
     public static implicit operator double(Private value)
     {
@@ -92,6 +105,8 @@ public class Private
         return new Private(value);
     }
 
+=======
+>>>>>>> 47218e7490fa0b892d001394c4c2c1c4a8f807d6
     public static Private operator -(Private double1, Private double2)
     {
         return new Private(double1.GetValue() - double2.GetValue());
