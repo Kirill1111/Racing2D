@@ -1,22 +1,33 @@
+
+
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Experimental.UIElements;
+using UnityEngine.SceneManagement;
+using System.Globalization;
+using System;
 
-public class MoveKeyboardPlayer : MonoBehaviour
+public class MoveKeyboardPlayer : Photon.MonoBehaviour
 {
 
     // Переменные движения
     public GameObject player;
-    public float speedRotation = 7;
-    public float speed = 0;
-    public float MinSpeed;
-    public float speedAcceleration;
-    public float MaxSpeed = 60;
-    public float speeD = 3;
-    public Camera cam;
-   public int ButtonID;
+    public Private speedRotation = 7;
+    public Private speed = 0;
+    public Private MinSpeed;
+    public Private speedAcceleration;
+    public Private MaxSpeed = 60;
+    public Private speeD = 3;
+    public GameObject cam;
     public GameObject MobileControl;
     public GameObject Timer;
+    public Sprite[] Car;
+    public int CarType = 0;
+
+    public bool MobileControl1 = false;
+    public bool MobileControl2 = false;
+    public bool MobileControl3 = false;
+    public bool MobileControl4 = false;
 
     private RigidbodyConstraints standart;
     private bool OnCol = false;
@@ -25,65 +36,119 @@ public class MoveKeyboardPlayer : MonoBehaviour
     private AudioSource carAudio;
     private bool run = true;
     private bool KeyDown = true;
+    private Vector3 oldPos = Vector3.zero;
+    private Vector3 newPos = Vector3.zero;
+    private Quaternion oldQua = Quaternion.identity;
+    private Quaternion newQua = Quaternion.identity;
+    float offSetTime = 0;
+    bool isSinch = false;
 
-    public void OnPointerDown1()
+    public void OnPointerDown1(Boolean Action)
     {
-        ButtonID = 1;
-    }
-    public void OnPointerDown2()
-    {
-        ButtonID = 2;
-    }
-    public void OnPointerDown3()
-    {
-        ButtonID = 3;
-    }
-    public void OnPointerDown4()
-    {
-        ButtonID = 4;
-    }
 
-    public void OnPointerUp()
+            Informations.MobileControl1 = Action;
+        
+    }
+    public void OnPointerDown2(Boolean Action)
     {
-        ButtonID = 0;
+
+            Informations.MobileControl2 = Action;
+        
+    }
+    public void OnPointerDown3(Boolean Action)
+    {
+
+            Informations.MobileControl3 = Action;
+        
+    }
+    public void OnPointerDown4(Boolean Action)
+    {
+            Informations.MobileControl4 = Action;
+        
     }
 
     void Start()
     {
-        if (SystemInfo.operatingSystem != "Windows")
-            Destroy(MobileControl);
-        carAudio = GetComponent<AudioSource>();
-        rb = GetComponent<Rigidbody>();
-        player = (GameObject)this.gameObject;
-        CamRB = cam.GetComponent<Rigidbody>();
-        standart = rb.constraints;
+            carAudio = GetComponent<AudioSource>();
+            rb = GetComponent<Rigidbody>();
+           standart = rb.constraints;
+ 
+            player = this.gameObject;
+
+            cam = GameObject.Find("Main Camera");
+            MobileControl = GameObject.Find("MobileControl");
+
+        if (Informations.isNet)
+            photonView.RPC("SelectColor", PhotonTargets.All);
+        else
+            SelectColor();
+
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
+                Destroy(MobileControl);
+
+
+            CamRB = cam.GetComponent<Rigidbody>();
+
     }
+
+    [PunRPC]
+    public void SelectColor()
+    {
+        int CarI = 0;
+        if(photonView.isMine){ 
+                GetComponent<SpriteRenderer>().sprite = Car[CarType];
+                CarI = CarType;
+            }
+        else{
+                GetComponent<SpriteRenderer>().sprite = Car[Informations.CarId];
+            CarI = Informations.CarId;
+            }
+        switch (Informations.CarId)
+            {
+                case 0:
+                    GetComponent<MoveKeyboardPlayer>().MaxSpeed = 20;
+                    GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2f;
+                    GetComponent<MoveKeyboardPlayer>().speeD = 2.5f;
+                    GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
+                    GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
+                    break;
+                case 1:
+                    GetComponent<MoveKeyboardPlayer>().MaxSpeed = 25;
+                    GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2.5f;
+                    GetComponent<MoveKeyboardPlayer>().speeD = 3;
+                    GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
+                    GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
+                    break;
+            }
+
+        
+    }
+
+
 
     void Update()
     {
-        cam.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
-        carAudio.pitch = Mathf.Clamp(speed / 15, 0.1f, 4f);
+        carAudio.pitch = Mathf.Clamp((float)speed / 15, 0.1f, 4f);
 
-        if (Timer.GetComponent<Timer>().isStart == true)
+        if (photonView.isMine || !Informations.isNet)
         {
-            rb.velocity = -player.transform.up * speed * Time.deltaTime * 35;
             cam.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
+            rb.velocity = -player.transform.up * (float)speed * Time.deltaTime * 35;
 
-
-            if (OnCol == false)
+            if (Informations.isStart == true || Informations.isNet)
             {
-                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || ButtonID == 1)
+                if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Informations.MobileControl1)
                 {
-                    if (speed < MaxSpeed && speed + speeD * Time.deltaTime < MaxSpeed)
+                    if ((float)speed < (float)MaxSpeed && (float)speed + (float)speeD* Time.deltaTime < (float)MaxSpeed)
                     {
                         speed += speedAcceleration * Time.deltaTime;
                         run = true;
                         KeyDown = true;
                     }
                 }
-                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || ButtonID == 3)
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Informations.MobileControl3)
                 {
-                    if (speed > MinSpeed && speed - speeD * Time.deltaTime > MinSpeed)
+                    if ((float)speed > (float)MinSpeed && (float)speed - (float)speeD * Time.deltaTime > (float)MinSpeed)
                     {
                         if (speed >= 0)
                             speed -= speeD * Time.deltaTime * speeD;
@@ -93,66 +158,79 @@ public class MoveKeyboardPlayer : MonoBehaviour
                         KeyDown = true;
                     }
                 }
-            }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || ButtonID == 4)
-            {
-                if (speed == 0) return;
-                speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3.5f;
-                if (run || speed > 0)
-                    rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
-                else
-                    rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || ButtonID == 2)
-            {
-                if (speed == 0) return;
-                speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3;
-                if (run || speed > 0)
-                    rb.transform.localEulerAngles += Vector3.forward * speedRotation * Time.deltaTime;
-                else
-                    rb.transform.localEulerAngles += Vector3.back * speedRotation * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.Escape))
-            {
-                Application.Quit();
-            }
-
-            if (KeyDown == false)
-            {
-                if (speed >= 0)
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Informations.MobileControl4)
                 {
-                    if (speed - speeD * Time.deltaTime > 0)
-                        speed -= speeD * Time.deltaTime;
+                    if (speed == 0) return;
+                    speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3.5f;
+                    if (run || (float)speed > 0)
+                        player.transform.localEulerAngles += Vector3.back * (float)speedRotation* Time.deltaTime;
+                    else
+                        player.transform.localEulerAngles += Vector3.forward * (float)speedRotation * Time.deltaTime;
+                }
+                if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Informations.MobileControl2)
+                {
+                    if (speed == 0) return;
+                    speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3;
+                    if (run || (float)speed > 0)
+                        player.transform.localEulerAngles += Vector3.forward * (float)speedRotation * Time.deltaTime;
+                    else
+                        player.transform.localEulerAngles += Vector3.back * (float)speedRotation* Time.deltaTime;
+                }
+                if (Input.GetKey(KeyCode.Escape))
+                {
+                    Application.Quit();
+                }
+
+                if (KeyDown == false)
+                {
+                    if (speed >= 0)
+                    {
+                        if ((float)speed - (float)speeD * Time.deltaTime > 0)
+                            speed -= speeD * Time.deltaTime;
+                        else
+                        {
+                            speed = 0;
+                            run = true;
+                        }
+                    }
                     else
                     {
-                        speed = 0;
-                        run = true;
+                        if ((float)speed + (float)speeD * Time.deltaTime < 0)
+                            speed += speeD * Time.deltaTime;
+                        else
+                        {
+                            speed = 0;
+                            run = true;
+                        }
                     }
+                    return;
                 }
-                else
-                {
-                    if (speed + speeD * Time.deltaTime < 0)
-                        speed += speeD * Time.deltaTime;
-                    else
-                    {
-                        speed = 0;
-                        run = true;
-                    }
-                }
-                return;
-            }
 
-            KeyDown = false;
+                KeyDown = false;
+            }
+        }
+        else if (isSinch)
+        {
+
+            offSetTime = Time.deltaTime * 6f;
+
+            rb.transform.position = Vector3.Lerp(transform.position, newPos, offSetTime);
+
+            rb.rotation = Quaternion.Lerp(transform.rotation, newQua, offSetTime);
+            
+
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        rb.freezeRotation = true;
+        if (photonView.isMine||!Informations.isNet)
+            rb.freezeRotation = true;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if(photonView.isMine||!Informations.isNet)
         rb.constraints = standart;
     }
 
@@ -160,6 +238,24 @@ public class MoveKeyboardPlayer : MonoBehaviour
     {
       /*  if(speed >=0)
          speed -= speeD * Time.deltaTime * speeD;    */   
+    }
+
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+       Vector3 pos = transform.position;
+        Quaternion rot = transform.rotation;
+        stream.Serialize(ref pos);
+        stream.Serialize(ref rot);
+        if (stream.isReading)
+        {
+            oldPos = rb.position;
+            newPos = pos;
+            oldQua = rb.rotation;
+            newQua = rot;
+
+            offSetTime = 0;
+            isSinch = true;
+        }
     }
 
 }

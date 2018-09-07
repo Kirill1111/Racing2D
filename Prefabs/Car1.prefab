@@ -52,16 +52,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c388ce73bc3604dba905f48c986600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  speedRotation: 7
+  player: {fileID: 1924310923455302}
+  speedRotation: 100
   speed: 0
-  MinSpeed: 0
-  speedAcceleration: 0
-  MaxSpeed: 60
-  speeD: 3
-  cam: {fileID: 0}
+  MinSpeed: -5
+  speedAcceleration: 2
+  MaxSpeed: 20
+  speeD: 2.5
+  cam: {fileID: 20294539302254780, guid: 73d199a0fef2e3f45b5f7042c3ebc25b, type: 2}
   ButtonID: 0
-  MobileControl: {fileID: 0}
+  MobileControl: {fileID: 1433699955213992, guid: 818716ccfef6dd74aabba65499a30dce,
+    type: 2}
+  Timer: {fileID: 1716992968351920, guid: ec6aaa1961bd9f64eba4c69d83b94915, type: 2}
 --- !u!212 &212838465956240888
 SpriteRenderer:
   m_ObjectHideFlags: 1
