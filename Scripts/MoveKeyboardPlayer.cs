@@ -47,7 +47,6 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
     public void OnPointerDown1(Boolean Action)
     {
 
-
             Informations.MobileControl1 = Action;
         
     }
@@ -77,15 +76,20 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
  
             player = this.gameObject;
 
+        if (Informations.isNet)
+        {
             cam = GameObject.Find("Main Camera");
             MobileControl = GameObject.Find("MobileControl");
+            if(photonView.isMine)
+            cam.SetActive(photonView);
+        }
 
-        if (Informations.isNet)
-            photonView.RPC("SelectColor", PhotonTargets.All);
-        else
-            SelectColor();
+        if (Informations.isNet && photonView.isMine)
+            photonView.RPC("SelectColor", PhotonTargets.AllBuffered, Informations.CarId);
+        else if (!Informations.isNet)
+            SelectColor(Informations.CarId);
 
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Informations.isDebug)
                 Destroy(MobileControl);
 
 
@@ -95,40 +99,37 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
 
 
     [PunRPC]
-    public void SelectColor()
+    public void SelectColor(int CarID)
     {
+                GetComponent<SpriteRenderer>().sprite = Car[CarID];
 
-        GetComponent<SpriteRenderer>().sprite = Car[Informations.CarId];
-
-        switch (Informations.CarId)
-        {
-            case 0:
-                GetComponent<MoveKeyboardPlayer>().MaxSpeed = 20;
-                GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2f;
-                GetComponent<MoveKeyboardPlayer>().speeD = 2.5f;
-                GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
-                GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
-                break;
-            case 1:
-                GetComponent<MoveKeyboardPlayer>().MaxSpeed = 25;
-                GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2.5f;
-                GetComponent<MoveKeyboardPlayer>().speeD = 3;
-                GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
-                GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
-                break;
-        }
-
+        switch (CarID)
+            {
+                case 0:
+                    GetComponent<MoveKeyboardPlayer>().MaxSpeed = 20;
+                    GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2f;
+                    GetComponent<MoveKeyboardPlayer>().speeD = 2.5f;
+                    GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
+                    GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
+                    break;
+                case 1:
+                    GetComponent<MoveKeyboardPlayer>().MaxSpeed = 25;
+                    GetComponent<MoveKeyboardPlayer>().speedAcceleration = 2.5f;
+                    GetComponent<MoveKeyboardPlayer>().speeD = 3;
+                    GetComponent<MoveKeyboardPlayer>().speedRotation = 100;
+                    GetComponent<MoveKeyboardPlayer>().MinSpeed = -3;
+                    break;
+            }
 
     }
 
 
 
-    void Update()
+    private void Update()
     {
+
         carAudio.pitch = Mathf.Clamp((float)speed / 15, 0.1f, 4f);
 
-        cam.transform.position = new Vector3(transform.position.x, transform.position.y, 10);
-        carAudio.pitch = Mathf.Clamp((float)speed.GetValue() / 15, 0.1f, 4f);
 
         if (photonView.isMine || !Informations.isNet)
         {
@@ -163,7 +164,7 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
                 {
                     if (speed == 0) return;
                     speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3.5f;
-                    if (run || (float)speed > 0)
+                    if (run || speed > 0)
                         player.transform.localEulerAngles += Vector3.back * (float)speedRotation * Time.deltaTime;
                     else
                         player.transform.localEulerAngles += Vector3.forward * (float)speedRotation * Time.deltaTime;
@@ -172,7 +173,7 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
                 {
                     if (speed == 0) return;
                     speed -= speeD * Time.deltaTime * speed / MaxSpeed * 3;
-                    if (run || (float)speed > 0)
+                    if (run || speed > 0)
                         player.transform.localEulerAngles += Vector3.forward * (float)speedRotation * Time.deltaTime;
                     else
                         player.transform.localEulerAngles += Vector3.back * (float)speedRotation * Time.deltaTime;
@@ -186,7 +187,7 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
                 {
                     if (speed >= 0)
                     {
-                        if ((float)speed - (float)speeD * Time.deltaTime > 0)
+                        if (speed - speeD * Time.deltaTime > 0)
                             speed -= speeD * Time.deltaTime;
                         else
                         {
@@ -196,7 +197,7 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
                     }
                     else
                     {
-                        if ((float)speed + (float)speeD * Time.deltaTime < 0)
+                        if (speed + speeD * Time.deltaTime < 0)
                             speed += speeD * Time.deltaTime;
                         else
                         {
@@ -218,12 +219,10 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
             rb.transform.position = Vector3.Lerp(transform.position, newPos, offSetTime);
 
             rb.rotation = Quaternion.Lerp(transform.rotation, newQua, offSetTime);
-
         }
 
-     
-
-    }   
+    }
+    
 
     private void OnCollisionExit(Collision collision)
     {

@@ -306,7 +306,11 @@ MonoBehaviour:
   Car:
   - {fileID: 21300000, guid: fd365e42430c860419f47bf0b88ce0d1, type: 3}
   - {fileID: 21300000, guid: 79ce588457e31a148bec577a69ba7629, type: 3}
-  _photonView: {fileID: 114109880597726180}
+  CarType: 0
+  MobileControl1: 0
+  MobileControl2: 0
+  MobileControl3: 0
+  MobileControl4: 0
 --- !u!114 &114406658273910602
 MonoBehaviour:
   m_ObjectHideFlags: 1

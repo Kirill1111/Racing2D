@@ -18,6 +18,8 @@ public class Timer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        if (Informations.isDebug)
+            time = 1000000;
         Informations.isNet = false;
 
         TimeStart = 3;
