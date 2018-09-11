@@ -81,10 +81,7 @@ public class ItemList : Photon.MonoBehaviour {
         {
             Informations.isNet = true;
             GameObject game = PhotonNetwork.Instantiate("MyCar", new Vector3(-50, -5, -4.85f), Quaternion.identity, 0);
-            //  if (photonView.isMine)
-            //        game.GetComponent<MoveKeyboardPlayer>().CarType = Informations.CarId;
             isInst = true;
-
         }   
     }
 
