@@ -45,5 +45,7 @@ public class SelectCar : MonoBehaviour {
         SceneManager.LoadScene(NextLvl);
         if(Type==0)
         Informations.CarId = Page;
+        if (Type == 1)
+            Informations.isNet = false;
     }
 }
