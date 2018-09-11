@@ -79,18 +79,9 @@ public class Private
 
     public static implicit operator float(Private value)
     {
-        return new Private(value);
+        return (float)value.GetValue();
     }
 
-    public static implicit operator int(Private value)
-    {
-        return new Private(value);
-    }
-
-    public static implicit operator byte(Private value)
-    {
-        return new Private(value);
-    }
 
     public static Private operator -(Private double1, Private double2)
     {
@@ -127,6 +118,7 @@ public class Private
             return true;
         return false;
     }
+
     public static bool operator !=(Private double1, Private double2)
     {
         if (double1.GetValue() != double2.GetValue())
