@@ -15,7 +15,6 @@ public class GraphicsSettings : MonoBehaviour
     {
         if (Tab.Length > ID)
         {
-            if(Back!=null)
             Tab[Back].SetActive(false);
             Tab[ID].SetActive(true);
             Back = ID;
