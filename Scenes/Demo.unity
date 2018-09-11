@@ -628,7 +628,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1186218893}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.0778265
+  m_Size: 0.07682739
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -889,7 +889,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00000039640108, y: -0.000036319492}
+  m_AnchoredPosition: {x: -0.0000071269387, y: -0.000036319492}
   m_SizeDelta: {x: 0, y: 4457.2}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &735737134
@@ -1124,7 +1124,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1644922454}
   m_HandleRect: {fileID: 1644922453}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1196,7 +1196,7 @@ RectTransform:
   m_Father: {fileID: 1348644440}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.9221735}
+  m_AnchorMin: {x: 0, y: 0.9231726}
   m_AnchorMax: {x: 1, y: 0.9999998}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
