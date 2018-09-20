@@ -13,15 +13,15 @@ public class Timer : MonoBehaviour {
     public bool isStart = true;
     public GameObject Car;
 
-    private int TimeStart;
-    public int time ;
+    private Private TimeStart;
+    public Private time ;
 
 	// Use this for initialization
 	void Start () {
-        if (Informations.isDebug)
-            time = 1000000;
         Informations.isNet = false;
 
+        if (Informations.isDebug)
+            TimerStart.SetActive( false );
         TimeStart = 3;
         InvokeRepeating("StartTime", 0, 1);
         time = startTime;
@@ -56,6 +56,7 @@ public class Timer : MonoBehaviour {
         }
         if (time > 0)
         {         
+            if(!Informations.isDebug)
             time--;
             Informations. isStart = true;
             isStart = true;
