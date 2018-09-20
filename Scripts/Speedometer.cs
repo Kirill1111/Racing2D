@@ -17,9 +17,9 @@ public class Speedometer : Photon.MonoBehaviour {
 
 	public float velocity; // текущая реальная скорость объекта
 
-	private float speed;
+    public float speed; // текущая реальная скорость объекта
 
-	void Start () 
+    void Start () 
 	{
         if(Informations.isNet)
             target = GameObject.Find("MyCar(Clone)");
