@@ -16,7 +16,6 @@ public class ItemList : Photon.MonoBehaviour {
 
     public List<GameObject> button = new List<GameObject>();
 
-    private int Players = 0;
     private static bool isLoad = false;
     private static bool isInst = false;
     private RoomInfo[] Room;
