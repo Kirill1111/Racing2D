@@ -89,7 +89,7 @@ public class MoveKeyboardPlayer : Photon.MonoBehaviour
         else if (!Informations.isNet)
             SelectColor(Informations.CarId);
 
-            if (Application.platform == RuntimePlatform.WindowsPlayer || Informations.isDebug)
+            if (Application.platform == RuntimePlatform.WindowsPlayer && !Informations.isDebug)
                 Destroy(MobileControl);
 
 
