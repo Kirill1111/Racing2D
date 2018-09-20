@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*Данный код необходим для безопасного
+ * хранение данных типов float , int ,
+ * double. 
+ * Разработан : 20 . 09 . 2018
+ * Версия кода : 1.0
+ */
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,32 +13,42 @@ using UnityEngine;
 [Serializable]
 public class Private 
 {
-
-    private double offset;
-    private double value;
+    // При создание защищенной переменной генерируется случайный offset
+    // После чего к исходному значению пребавляется offset.
+    // Например : При создание типа с значением 50 будет сгенерировано
+    // случайное число (offset) и к 50 прибавляется offset
+    private int offset = 0; // Смещение
+    private double value; // Значение
 
     #region constructions
     public Private(float value)
     {
-        offset = new  System.Random().Next(-10000, 10000);
+        Generate();
         this.value = value + offset;
     }
     public Private(double value)
     {
-        offset = new System.Random().Next(-10000, 10000);
+        Generate();
         this.value = value + offset;
     }
     public Private(int value)
     {
-        offset = new System.Random().Next(-10000, 10000);
+        Generate();
         this.value = value + offset;
     }
     public Private(byte value)
     {
-        offset = new System.Random().Next(-10000, 10000);
+        Generate();
         this.value = value + offset;
     }
     #endregion
+
+    private void Generate()
+    {
+        while (offset == 0)
+            offset = new System.Random().Next(-10000, 10000);
+        return;
+    }
 
     public double GetValue()
     {
